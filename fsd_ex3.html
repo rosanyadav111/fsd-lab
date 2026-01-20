@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Survey Form</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: #fff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, .1);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        textarea {
+            resize: vertical;
+        }
+
+        .radio-group {
+            margin-top: 5px;
+        }
+
+        .radio-group label {
+            font-weight: normal;
+            display: inline-block;
+            margin-right: 15px;
+        }
+
+        button {
+            margin-top: 20px;
+            width: 100%;
+            padding: 12px;
+            background: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+
+        .success {
+            margin-top: 15px;
+            color: green;
+            text-align: center;
+        }
+
+        .data-box {
+            margin-top: 25px;
+            background: #f1f1f1;
+            padding: 15px;
+            border-radius: 4px;
+            max-height: 200px;
+            overflow-y: auto;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h2>Student Feedback Survey</h2>
+
+        <form id="surveyForm">
+            <label>Name</label>
+            <input type="text" id="name" required>
+
+            <label>Email</label>
+            <input type="email" id="email" required>
+
+            <label>Course</label>
+            <select id="course" required>
+                <option value="">Select</option>
+                <option>HTML & CSS</option>
+                <option>JavaScript</option>
+                <option>Python</option>
+                <option>Full Stack Development</option>
+            </select>
+
+            <label>Overall Rating</label>
+            <div class="radio-group">
+                <label><input type="radio" name="rating" value="Excellent" required> Excellent</label>
+                <label><input type="radio" name="rating" value="Good"> Good</label>
+                <label><input type="radio" name="rating" value="Average"> Average</label>
+            </div>
+
+            <label>Comments</label>
+            <textarea id="comments" rows="4"></textarea>
+
+            <button type="submit">Submit Survey</button>
+        </form>
+
+        <div id="message" class="success"></div>
+
+        <div class="data-box">
+            <strong>Stored Survey Data (JSON)</strong>
+            <pre id="output"></pre>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById("surveyForm");
+        const output = document.getElementById("output");
+        const message = document.getElementById("message");
+
+        function loadData() {
+            const data = JSON.parse(localStorage.getItem("surveyData")) || [];
+            output.textContent = JSON.stringify(data, null, 2);
+        }
+
+        form.addEventListener("submit", e => {
+            e.preventDefault();
+
+            const entry = {
+                name: form.name.value,
+                email: form.email.value,
+                course: form.course.value,
+                rating: document.querySelector("input[name=rating]:checked").value,
+                comments: form.comments.value,
+                time: new Date().toLocaleString()
+            };
+
+            const data = JSON.parse(localStorage.getItem("surveyData")) || [];
+            data.push(entry);
+            localStorage.setItem("surveyData", JSON.stringify(data));
+
+            message.textContent = "Survey submitted successfully!";
+            form.reset();
+            loadData();
+        });
+
+        loadData();
+    </script>
+
+</body>
+
+</html>
